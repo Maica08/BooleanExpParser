@@ -9,6 +9,9 @@ def get_operands(expression: str | List) -> List:
     dist_opr = []
 
     for e in expression:
+        if e == "-":
+            if expression[expression.index(e) + 1] not in symbols:
+                operands.append(e + expression[expression.index(e) + 1])
         if e not in symbols:
             operands.append(e)
 
