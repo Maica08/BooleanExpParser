@@ -123,8 +123,32 @@ def disjunction_operands(exp: str):
                     exp1.remove(e) 
             final_exp = f'{exp2[0]} + {exp1[0]}'
             return final_exp
+
+def de_morgans(exp: str) -> str:
+    used_laws = []
+    if '+' in exp:
+        temp_exp = [e.strip() for e in exp[2:-1].split('+')]
             
+        for e in temp_exp:
+            if len(e) > 1:
+                temp_exp[temp_exp.index(e)] = f'-({e})'
+            else:
+                temp_exp[temp_exp.index(e)] = f'-{e}'
+        final_exp = ''.join(temp_exp)
+    
+    else:
+        temp_exp = [e for e in exp[2:-1]]
+        print(temp_exp)
+        for e in temp_exp:
+            if e == '-':
+                temp_exp[temp_exp.index(e) + 1] = e + temp_exp[temp_exp.index(e) + 1]
+                temp_exp.remove(e)
+        final_exp = ' + '.join(temp_exp)
+    
+    used_laws.append(11)    
+    return final_exp        
+                
     
 if __name__ == "__main__":    
-    print(disjunction_operands('-A + AB'))
+    print(de_morgans('-(AB-C-DE)'))
         

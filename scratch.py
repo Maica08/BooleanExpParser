@@ -26,11 +26,17 @@
 # print(get_operands(expression))
 
 
-var = ['-A', 'B']
-letter = '-B'
+# var = ['-A', 'B']
+# letter = '-B'
 
-if letter[-1] in var[-1]:
-    print(True)
-else:
-    print(False)
+# if letter[-1] in var[-1]:
+#     print(True)
+# else:
+#     print(False)
+
+# from sympy.logic import 
+
+var = ['-A', 'B']
+for i in range(len(var)):
+    print(i)
 
