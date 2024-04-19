@@ -25,4 +25,4 @@ def get_operands(expression: str | List) -> List:
     return dist_opr
 
 if __name__ == "__main__":
-    print(get_operands("ABB + C + D"))
+    print(get_operands("AB + CD + CD"))

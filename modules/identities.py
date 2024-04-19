@@ -56,7 +56,6 @@ def disjunction_operands(exp: str):
     used_laws = []
     res_exp = [e.strip() for e in exp.split('+')]
     # res_exp = sorted(res_exp, key=lambda x:len(x))
-    print(res_exp)
     
     # annulment
     if '1' in res_exp:
@@ -70,14 +69,7 @@ def disjunction_operands(exp: str):
             if '0' != e != '+':
                 final_exp = e
         used_laws.append(2)
-        return final_exp
-    
-    # idempotent
-    if res_exp[0] == res_exp[-1]:
-        final_exp = res_exp[0]
-        used_laws.append(3)
-        return final_exp
-    
+        return final_exp    
     
     # absorption & adsorption w/out parenthesis
     in_exp1 = [e for e in res_exp[0]]
@@ -123,6 +115,20 @@ def disjunction_operands(exp: str):
                     exp1.remove(e) 
             final_exp = f'{exp2[0]} + {exp1[0]}'
             return final_exp
+    
+    else:
+        # idempotent
+        temp_list = []
+        for e in res_exp:
+            if e in res_exp:
+                if e not in temp_list and e[::-1] not in temp_list:
+                    temp_list.append(e)
+                
+        final_exp = ' + '.join(temp_list)
+        used_laws.append(3)
+        
+    return final_exp
+
 
 def de_morgans(exp: str) -> str:
     used_laws = []
@@ -148,7 +154,107 @@ def de_morgans(exp: str) -> str:
     used_laws.append(11)    
     return final_exp        
                 
+def mixed_operands(exp: str) -> str:
+    used_laws = []
+    div = exp[:-1].split('(')
+    left = div[0]
+    right = [e.strip() for e in div[1].split('+')]
     
+    if len(right) == 2 and len(left) == 1:                      # absorptive 
+        for e in right:
+            if '-' not in e and len(e) == 1:
+                if e == left:
+                    final_exp = left
+                    used_laws.append(9)
+                    
+            elif left[0] in e and '-' in e:                     # adsorption
+                right.remove(e)
+                final_exp = f'{left[0]}{right[0]}'
+                used_laws.append(10)
+
+                
+    elif len(left) == 2 and len(right) == 2 and '-' in left:    
+        for e in right:
+            if e in left:
+                if e != left:                                   # adsorption
+                    right.remove(e)
+                    final_exp = f'{left}{right[0]}'
+                    used_laws.append(10)
+                
+                elif e == left:                                 # absorptive
+                    final_exp = left
+                    
+    else:
+        int_exp = [left + e for e in right]                     # distributive (expanded)
+        final_exp = (' + ').join(int_exp)
+        used_laws.append(7)
+        
+    return final_exp
+
+def extracted_distribution(exp: str) -> str:                    # distributive (extracted)
+    used_laws = []
+    common_opr = {}
+    opr = [e.strip() for e in exp.split('+')]
+    for e in opr:
+        for i in range(opr.index(e), len(opr)):
+            if opr.index(e) == i:
+                pass
+            else:
+                common = list(set(e).intersection(set(opr[i])))
+                print(f"e: {e}, common: {common}")
+                if common:
+                    if common[0] not in common_opr:
+                        common_opr[common[0]] = 0
+                    else:
+                        common_opr[common[0]] += 1         
+    
+    max_value = max([n for n in common_opr.values()])
+    max_keys = [key for key in common_opr if common_opr[key] == max_value]
+    
+    is_all_same = all(map(lambda x: x == list(common_opr.values())[0], common_opr.values()))
+    
+    if not is_all_same:
+        if len(max_keys) > 1:
+            for key in max_keys:
+                for e in opr:
+                    if key == e:
+                        max_key = e
+        else:
+            max_key = max_keys[0]
+            
+        distributed_ops = []
+        undistributed = []
+        if max_key:
+            for op in opr:
+                if max_keys[0] in op:
+                    if max_keys[0] == op:
+                        x = '1'
+                    else:
+                        x = op.replace(max_keys[0], '')
+                    distributed_ops.append(x)
+                else:
+                    undistributed.append(op)
+                        
+        new_exp = f'{max_keys[0]}({' + '.join(distributed_ops)})'
+        if len(undistributed) != 0:
+            final_exp = f'{new_exp} + {' + '.join(undistributed)}'
+        else:
+            final_exp = new_exp
+        used_laws.append(7)
+    
+    else:
+        final_exp = exp
+        
+    return final_exp
+        
+                
+        
+def helper(exp):
+    # double negation
+    if exp[0] == '-' and exp[0] == exp[1]:
+        f_exp = exp.replace('-', '')
+
 if __name__ == "__main__":    
-    print(de_morgans('-(AB-C-DE)'))
+    # print(extracted_distribution('AB + AC + A'))
+    print(disjunction_operands("AB + AB + BA + CD"))
         
