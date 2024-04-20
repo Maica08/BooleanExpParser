@@ -36,6 +36,7 @@ def adjoined_operands(exp: str) -> str:
         used_laws.append(2)
         
     simplify_exp = get_operands(res_exp)
+    
     # complement
     for e in simplify_exp: 
         if '-' in e and e[1] in simplify_exp:
@@ -70,6 +71,17 @@ def disjunction_operands(exp: str):
                 final_exp = e
         used_laws.append(2)
         return final_exp    
+    
+    # complement
+    else:
+        temp_list = res_exp
+        for e in temp_list:
+            for f in temp_list:
+                if '-' in f and e == f[1:]:
+                    temp_list[temp_list.index(f)] = '1'
+                    temp_list.remove(e)
+        used_laws.append(4)
+        final_exp = ' + '.join(temp_list)  
     
     # absorption & adsorption w/out parenthesis
     in_exp1 = [e for e in res_exp[0]]
@@ -115,7 +127,7 @@ def disjunction_operands(exp: str):
                     exp1.remove(e) 
             final_exp = f'{exp2[0]} + {exp1[0]}'
             return final_exp
-    
+        
     else:
         # idempotent
         temp_list = []
@@ -183,6 +195,12 @@ def mixed_operands(exp: str) -> str:
                 
                 elif e == left:                                 # absorptive
                     final_exp = left
+    
+    elif left == '1':
+        final_exp = ' + '.join(e for e in right)
+    
+    elif left == '0':
+        final_exp = '0'
                     
     else:
         int_exp = [left + e for e in right]                     # distributive (expanded)
@@ -195,23 +213,44 @@ def extracted_distribution(exp: str) -> str:                    # distributive (
     used_laws = []
     common_opr = {}
     opr = [e.strip() for e in exp.split('+')]
+    # if '-' in opr:
+    #     for op in opr:
+    #         if op == "-":
+    #             op += opr[opr.index(op) + 1]
+    #             opr.pop(opr.index(op) + 1)
+    print(opr)
+    
     for e in opr:
         for i in range(opr.index(e), len(opr)):
             if opr.index(e) == i:
                 pass
             else:
-                common = list(set(e).intersection(set(opr[i])))
+                current_index = [x for x in e]
+                next_index = [y for y in opr[i]]
+
+                for x in current_index:
+                    if x == "-":
+                        current_index[current_index.index(x) + 1] = x + current_index[current_index.index(x) + 1]
+                        current_index.remove(x)
+                        
+                for y in current_index:
+                    if y == "-":
+                        next_index[next_index.index(y) + 1] = x + next_index[next_index.index(y) + 1]
+                        next_index.remove(y)
+                
+                common = list(set(current_index).intersection(set(next_index)))
                 print(f"e: {e}, common: {common}")
                 if common:
                     if common[0] not in common_opr:
                         common_opr[common[0]] = 0
+                        common_opr[common[0]] += 1
                     else:
                         common_opr[common[0]] += 1         
     
     max_value = max([n for n in common_opr.values()])
     max_keys = [key for key in common_opr if common_opr[key] == max_value]
     
-    is_all_same = all(map(lambda x: x == list(common_opr.values())[0], common_opr.values()))
+    is_all_same = all(map(lambda x: x == list(common_opr.values())[0], common_opr.values())) if len(max_keys) > 1 else False
     
     if not is_all_same:
         if len(max_keys) > 1:
@@ -222,20 +261,22 @@ def extracted_distribution(exp: str) -> str:                    # distributive (
         else:
             max_key = max_keys[0]
             
+        print(max_key)
+        
         distributed_ops = []
         undistributed = []
         if max_key:
             for op in opr:
-                if max_keys[0] in op:
-                    if max_keys[0] == op:
+                if max_key in op:
+                    if max_key == op:
                         x = '1'
                     else:
-                        x = op.replace(max_keys[0], '')
+                        x = op.replace(max_key, '')
                     distributed_ops.append(x)
                 else:
                     undistributed.append(op)
                         
-        new_exp = f'{max_keys[0]}({' + '.join(distributed_ops)})'
+        new_exp = f'{max_key}({' + '.join(distributed_ops)})'
         if len(undistributed) != 0:
             final_exp = f'{new_exp} + {' + '.join(undistributed)}'
         else:
@@ -247,14 +288,38 @@ def extracted_distribution(exp: str) -> str:                    # distributive (
         
     return final_exp
         
-                
-        
-def helper(exp):
-    # double negation
+# double negation
+def double_neg(exp: str) -> str:
     if exp[0] == '-' and exp[0] == exp[1]:
         f_exp = exp.replace('-', '')
+        return f_exp
+    
+def associative(exp: str) -> str:
+    divide = exp[:-1].split('(')
+    outer = divide[0]
+    inner = divide[1]
+    
+    if '+' in exp:
+        outer = (outer.replace('+', '')).strip()
+        inner = [e.strip() for e in inner.split('+')]
+    
+        x = inner.pop()
+        inner.insert(0, outer)
+        outer = x
+        f_inner = ' + '.join(inner)
+        f_exp = f"{outer} + ({f_inner})"
+        
+    else:
+        x = inner[-1]
+        inner = outer + inner[:-1]
+        outer = x
+        f_exp = f"{outer}({inner})"
+        
+    return f_exp
 
 if __name__ == "__main__":    
     # print(extracted_distribution('AB + AC + A'))
-    print(disjunction_operands("AB + AB + BA + CD"))
+    # print(disjunction_operands("-A + AB"))
+    # print(extracted_distribution("-AB + AB + CD"))
+    print(associative("A(BC)"))
         

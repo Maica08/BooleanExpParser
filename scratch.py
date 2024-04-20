@@ -81,6 +81,7 @@
 # keys = [key for key in dic if dic[key] == max_value]
 # print(keys)
 
-a = "AC"
-b = "A"
-print(set(a).intersection(set(b)))
+# a = "AC"
+# b = "A"
+# print(set(a).intersection(set(b)))
+
