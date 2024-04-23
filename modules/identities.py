@@ -34,24 +34,37 @@ def adjoined_operands(exp: str) -> str:
             if e != '1':
                 res_exp.append(e)
         used_laws.append(2)
-        
-    simplify_exp = get_operands(res_exp)
     
-    # complement
-    for e in simplify_exp: 
-        if '-' in e and e[1] in simplify_exp:
-            final_exp = '0'
-            used_laws.append(4)
+    # print(res_exp)
+    # simplify_exp = get_operands(res_exp)
+    # print(simplify_exp)
+    
+    div_exp = [e for e in res_exp]
+    for e in div_exp:
+        if e == '-':
+            div_exp[div_exp.index(e) + 1] = '-' + div_exp[div_exp.index(e) + 1]
+            div_exp.remove(e)
             
-            return final_exp
-        
-        # idempotent
-        else:              
-            final_exp = ''.join(sorted(simplify_exp))
-            if len(res_exp) != len(simplify_exp):
-                used_laws.append(3)
-        
-    return final_exp
+    # complement
+    if len(div_exp) == 1:
+        final_exp = div_exp[0]
+        return final_exp
+    
+    else:
+        for e in div_exp: 
+            if '-' in e and e[1] in div_exp:
+                final_exp = '0'
+                used_laws.append(4)
+                
+                return final_exp
+            
+            # idempotent
+            else:              
+                final_exp = ''.join(sorted(div_exp))
+                if len(res_exp) != len(div_exp):
+                    used_laws.append(3)
+            
+        return final_exp
 
 def disjunction_operands(exp: str):
     used_laws = []
@@ -319,7 +332,11 @@ def associative(exp: str) -> str:
 
 if __name__ == "__main__":    
     # print(extracted_distribution('AB + AC + A'))
-    # print(disjunction_operands("-A + AB"))
+    # print(extracted_distribution("AB + ABC"))
+    # print(extracted_distribution("B + BC"))
+    # print(disjunction_operands(("1 + C")))
+    print(adjoined_operands("B(1)"))
+    print(adjoined_operands("-A"))
     # print(extracted_distribution("-AB + AB + CD"))
-    print(associative("A(BC)"))
+    # print(associative("A(BC)"))
         

@@ -85,3 +85,67 @@
 # b = "A"
 # print(set(a).intersection(set(b)))
 
+# x = not(1 | 0)
+
+# var = "!A * (B + C) + (A + D)"
+# vars = var.split('+')
+
+
+# def parenthesize(exp):
+#     parenthesis_count = 0
+#     parenthesized = []
+#     l_parenthesis_count = 0
+#     start_idx = None
+#     last_idx = None
+    
+#     counter = 0
+    
+#     while counter in range(len(exp)):
+#         if exp[counter] == '(':
+#             parenthesis_count += 1
+#             l_parenthesis_count += 1
+#             if l_parenthesis_count > 1:
+#                 pass
+#             else:
+#                 start_idx = counter
+#         elif exp[counter] == ')':
+#             l_parenthesis_count -= 1
+#             parenthesis_count -= 1
+#             last_idx = counter
+        
+#         if parenthesis_count == 0 and start_idx:
+#             parenthesized_exp = exp[start_idx:last_idx + 1]
+#             parenthesized.append(parenthesized_exp)
+#             start_idx = None
+#             last_idx = None
+        
+        
+#         counter += 1
+#     return parenthesized
+
+# print(parenthesize(var))
+def split_by_outermost_operator(expression, operator):
+    paren_count = 0
+    current_expression = ""
+    split_expressions = []
+
+    for char in expression:
+        if char == '(':
+            paren_count += 1
+        elif char == ')':
+            paren_count -= 1
+
+        if paren_count == 0 and char == operator:
+            split_expressions.append(current_expression)
+            current_expression = ""
+        else:
+            current_expression += char
+
+    split_expressions.append(current_expression)
+
+    return split_expressions
+
+
+expression = "(A * (B + C)) + (A + D) + A"
+split_expressions = split_by_outermost_operator(expression, '+')
+print(split_expressions)
