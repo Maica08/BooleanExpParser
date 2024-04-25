@@ -18,7 +18,7 @@ class Minimize:
                 if char_set[index] == ")" and (char_set[index + 1].isalpha() or char_set[index + 1] == "("):
                     indexes.append(index + 1)
                 elif char_set[index] != ")":
-                    if char_set[index].isalpha() and (char_set[index + 1].isalpha() or char_set[index + 1] == "("):
+                    if char_set[index].isalpha() and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1] == "!"):
                         indexes.append(index + 1)
         
         for i, index in enumerate(indexes):
@@ -37,6 +37,14 @@ class Minimize:
         self.expression = self.expression.replace('0', 'False')
         
         return self.expression
+    
+    def retranslate_expression(self, bool_exp:str):
+        bool_exp = str(bool_exp)
+        bool_exp = bool_exp.replace('&', '*')
+        bool_exp = bool_exp.replace('|', '+')
+        bool_exp = bool_exp.replace('~', '!')
+        
+        return bool_exp
         
     def minimize_expression(self) -> str:
         input_exp = self.translate_expression()
@@ -46,6 +54,8 @@ class Minimize:
             result = "1"
         elif result == False:
             result = "0"
+        
+        result = self.retranslate_expression(result)
         
         return result
         
@@ -63,9 +73,9 @@ def evaluate(expression: str) -> str:
             if char_set[index] == ")" and (char_set[index + 1].isalpha() or char_set[index + 1] == "("):
                 indexes.append(index + 1)
             elif char_set[index] != ")":
-                if char_set[index].isalpha() and (char_set[index + 1].isalpha() or char_set[index + 1] == "("):
+                if char_set[index].isalpha() and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1] == "!"):
                     indexes.append(index + 1)
-    
+                        
     for i, index in enumerate(indexes):
         char_set.insert(index + i, '*')
                 
@@ -73,8 +83,9 @@ def evaluate(expression: str) -> str:
     return result
 
 if __name__ == "__main__":
-    # exp = "~A | A"
-    exp = "AB(!A + B)D"
+    exp = "~B(A | A)"
+    # exp = "A + !A"
     exp = Minimize(exp)
     print(exp.minimize_expression())
+    # print(exp.evaluate())
     
