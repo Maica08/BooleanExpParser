@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from modules.minimize import Minimize
+from minimize import Minimize
 
 
 class App(ctk.CTk):

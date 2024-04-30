@@ -124,28 +124,69 @@
 #     return parenthesized
 
 # print(parenthesize(var))
-def split_by_outermost_operator(expression, operator):
-    paren_count = 0
-    current_expression = ""
-    split_expressions = []
+# def split_by_outermost_operator(expression, operator):
+#     paren_count = 0
+#     current_expression = ""
+#     split_expressions = []
 
-    for char in expression:
-        if char == '(':
-            paren_count += 1
-        elif char == ')':
-            paren_count -= 1
+#     for char in expression:
+#         if char == '(':
+#             paren_count += 1
+#         elif char == ')':
+#             paren_count -= 1
 
-        if paren_count == 0 and char == operator:
-            split_expressions.append(current_expression)
-            current_expression = ""
-        else:
-            current_expression += char
+#         if paren_count == 0 and char == operator:
+#             split_expressions.append(current_expression)
+#             current_expression = ""
+#         else:
+#             current_expression += char
 
-    split_expressions.append(current_expression)
+#     split_expressions.append(current_expression)
 
-    return split_expressions
+#     return split_expressions
 
 
-expression = "(A * (B + C)) + (A + D) + A"
-split_expressions = split_by_outermost_operator(expression, '+')
-print(split_expressions)
+# expression = "(A * (B + C)) + (A + D) + A"
+# split_expressions = split_by_outermost_operator(expression, '+')
+# print(split_expressions)
+
+
+def parenthesize(exp):
+    parenthesis_count = 0
+    parenthesized = []
+    l_parenthesis_count = 0
+    start_idx = None
+    last_idx = None
+    
+    counter = 0
+    
+    while counter in range(len(exp)):
+        if exp[counter] == '(':
+            parenthesis_count += 1
+            l_parenthesis_count += 1
+            if l_parenthesis_count > 1:
+                pass
+            else:
+                start_idx = counter
+        elif exp[counter] == ')':
+            l_parenthesis_count -= 1
+            parenthesis_count -= 1
+            last_idx = counter
+        
+        if parenthesis_count == 0 and start_idx:
+            parenthesized_exp = exp[start_idx:last_idx + 1]
+            parenthesized.append(parenthesized_exp)
+            start_idx = None
+            last_idx = None
+        
+        
+        counter += 1
+    return parenthesized
+
+a = "(A + C) * (B + C)"
+if a[0] == '(' and a[-1] == ')':
+    # Check if the aression is fully enclosed in parentheses
+    if a.count('(') == 1 and a.count(')') == 1:
+        a = a[1:-1]
+        
+print(a)
