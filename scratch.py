@@ -151,42 +151,46 @@
 # print(split_expressions)
 
 
-def parenthesize(exp):
-    parenthesis_count = 0
-    parenthesized = []
-    l_parenthesis_count = 0
-    start_idx = None
-    last_idx = None
+# def parenthesize(exp):
+#     parenthesis_count = 0
+#     parenthesized = []
+#     l_parenthesis_count = 0
+#     start_idx = None
+#     last_idx = None
     
-    counter = 0
+#     counter = 0
     
-    while counter in range(len(exp)):
-        if exp[counter] == '(':
-            parenthesis_count += 1
-            l_parenthesis_count += 1
-            if l_parenthesis_count > 1:
-                pass
-            else:
-                start_idx = counter
-        elif exp[counter] == ')':
-            l_parenthesis_count -= 1
-            parenthesis_count -= 1
-            last_idx = counter
+#     while counter in range(len(exp)):
+#         if exp[counter] == '(':
+#             parenthesis_count += 1
+#             l_parenthesis_count += 1
+#             if l_parenthesis_count > 1:
+#                 pass
+#             else:
+#                 start_idx = counter
+#         elif exp[counter] == ')':
+#             l_parenthesis_count -= 1
+#             parenthesis_count -= 1
+#             last_idx = counter
         
-        if parenthesis_count == 0 and start_idx:
-            parenthesized_exp = exp[start_idx:last_idx + 1]
-            parenthesized.append(parenthesized_exp)
-            start_idx = None
-            last_idx = None
+#         if parenthesis_count == 0 and start_idx:
+#             parenthesized_exp = exp[start_idx:last_idx + 1]
+#             parenthesized.append(parenthesized_exp)
+#             start_idx = None
+#             last_idx = None
         
         
-        counter += 1
-    return parenthesized
+#         counter += 1
+#     return parenthesized
 
-a = "(A + C) * (B + C)"
-if a[0] == '(' and a[-1] == ')':
-    # Check if the aression is fully enclosed in parentheses
-    if a.count('(') == 1 and a.count(')') == 1:
-        a = a[1:-1]
+# a = "(A + C) * (B + C)"
+# if a[0] == '(' and a[-1] == ')':
+#     # Check if the aression is fully enclosed in parentheses
+#     if a.count('(') == 1 and a.count(')') == 1:
+#         a = a[1:-1]
         
-print(a)
+# print(a)
+
+a = "!A"
+left, right = a.split("!")
+

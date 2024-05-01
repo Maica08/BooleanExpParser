@@ -8,10 +8,10 @@ def precedence(expression: str) -> Dict:
     
     # initial test
     exp = expression.strip()
-    if exp[0] == '(' and exp[-1] == ')':
-    # Check if the expression is fully enclosed in parentheses
-        if exp.count('(') == 1 and exp.count(')') == 1 and exp.index('(') == 0 and exp.rindex(')') == len(exp) - 1:
-            exp = exp[1:-1]
+    if "(" in exp:
+        if exp[0] == '(' and exp[-1] == ')':
+            if exp.count('(') == 1 and exp.count(')') == 1 and exp.index('(') == 0 and exp.rindex(')') == len(exp) - 1:
+                exp = exp[1:-1]
         
 
             
@@ -38,28 +38,42 @@ def precedence(expression: str) -> Dict:
         
         i += 1
         
+        
                 
     if not current_operator:
-        return exp
-            
-    left_exp = exp[:current_operator_index].strip()
-    right_exp = exp[current_operator_index + 1:].strip()
-    
-    result[current_operator] = [precedence(left_exp), precedence(right_exp)]
-    
-    
-    # if expression[0] == "(":
-    #     result[current_operator].insert(0, "(")
-    #     result[current_operator].insert(1, ")")
+        if "(" in exp:
+            if exp[0] == '(' and exp[-1] == ')':
+                exp = exp[1:-1]
+                
+                i = 0      
+                while i in range(len(exp)):
+                    if exp[i] ==  '(':
+                        parenthesis_count += 1
+                    elif exp[i] == ')':
+                        parenthesis_count -= 1
+                    elif exp[i] in operators and parenthesis_count == 0:
+                        if operators[exp[i]] > max_weight:
+                            max_weight = operators[exp[i]]
+                            current_operator = exp[i]
+                            current_operator_index = i
+                
+                    i += 1
+        else:
+            return exp
         
-    # for value in result[current_operator]:
-    #     value = precedence(value)            
+    if current_operator == '!':
+        operand = exp[current_operator_index + 1:].strip()
+        result[current_operator] = [precedence(operand)]
+        
+    else:
+        left_exp = exp[:current_operator_index].strip()
+        right_exp = exp[current_operator_index + 1:].strip()
+    
+        result[current_operator] = [precedence(left_exp), precedence(right_exp)]
         
     return result
 
-def parenthesis_pair(string:str):
-    pass
 
 if __name__ == "__main__":
-    a = "A * ((A + B) + (A + C))"
+    a = "!A*B"
     print(precedence(a))
