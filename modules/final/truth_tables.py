@@ -1,11 +1,21 @@
 from typing import List, Dict
+from .parser import precedence
 
 
 operators = ['+', '*', '!']
 delimiters = ['(', ')', ' ']
 non_operands = operators + delimiters
 
-def get_identifiers(expression: str) -> str:
+def get_identifiers(expression: str) -> List[str]:
+    """
+    Gets identifiers in an expression for table construction
+    
+    Args:
+        expression (str): boolean expression
+
+    Returns:
+        List[str]: variabels/identifiers for initial table
+    """
     identifiers = []
     operands = []
     
@@ -21,7 +31,15 @@ def get_identifiers(expression: str) -> str:
     identifiers.sort()
     return identifiers
 
-def initial_table(identifiers: List) -> Dict:
+def initial_table(identifiers: List[str]) -> Dict:
+    """
+    Constructs initial table with identifiers
+    Args:
+        identifiers (List[str]): identifiers in an expression
+
+    Returns:
+        Dict: initial table
+    """
     n_rows =  2 ** len(identifiers)
     columns = {identifier: [] for identifier in identifiers}
     
@@ -47,17 +65,10 @@ def initial_table(identifiers: List) -> Dict:
             
     return columns
 
-def final_table(initial_table: List, bool_exp: List) -> Dict:
-    # truth_table = initial_table
-    # for expression in bool_exp:
-    #     truth_table[expression] = []
-        
-    # start_column = len(initial_table) - 1
-    # keys = bool_exp
+
+def final_table(initial_table: Dict, bool_exp: str) -> Dict:
+    exp_precedence = precedence(bool_exp)
     
-    # for key in keys:
-    
-    pass
         
         
 

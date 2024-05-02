@@ -4,6 +4,14 @@ operators = {'+': 3, '*': 2, '!': 1}
 delimiter = ['(', ')']
 
 def precedence(expression: str) -> Dict:
+    """
+    Determines the expression's precedence
+    Args:
+        expression (str): boolean expression
+
+    Returns:
+        Dict: contains a list that may contain nested lists and dictionaries
+    """
     result = {}
     
     # initial test
@@ -75,5 +83,5 @@ def precedence(expression: str) -> Dict:
 
 
 if __name__ == "__main__":
-    a = "!A*B"
+    a = "A*B + (A*(C + D))"
     print(precedence(a))
