@@ -1,5 +1,5 @@
 from typing import List, Dict
-from .parser import precedence
+from tokens import precedence
 
 
 operators = ['+', '*', '!']
@@ -66,8 +66,8 @@ def initial_table(identifiers: List[str]) -> Dict:
     return columns
 
 
-def final_table(initial_table: Dict, bool_exp: str) -> Dict:
-    exp_precedence = precedence(bool_exp)
+# def final_table(initial_table: Dict, bool_exp: str) -> Dict:
+#     exp_precedence = precedence(bool_exp)
     
         
         

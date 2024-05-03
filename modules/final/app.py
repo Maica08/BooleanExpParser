@@ -32,13 +32,17 @@ def tree_height(expression):
         return 0
 
 # Example usage
-expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
+# expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
+expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', 'C']}]}
 height = tree_height(expression)
-print("Tree Height:", height)
+# print("Tree Height:", height)
+
+x = [1, 1, 1, 1, 0, 0, 0, 0]
+print([1 if element else 0 for element in [not bool(elements) for elements in x]])
 
 
 # Example usage
-expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
-leaf_nodes = find_leaf_nodes(expression)
-print("Leaf Nodes:", leaf_nodes)
+# expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
+# leaf_nodes = find_leaf_nodes(expression)
+# print("Leaf Nodes:", leaf_nodes)
 
