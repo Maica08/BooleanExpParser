@@ -1,5 +1,70 @@
-from truth_tables import get_identifiers, initial_table
 from typing import List, Dict
+from .tokens import Tokenizer
+
+
+operators = ['+', '*', '!']
+delimiters = ['(', ')', ' ']
+non_operands = operators + delimiters
+
+def get_identifiers(expression: str) -> List[str]:
+    """
+    Gets identifiers in an expression for table construction
+    
+    Args:
+        expression (str): boolean expression
+
+    Returns:
+        List[str]: variabels/identifiers for initial table
+    """
+    identifiers = []
+    operands = []
+    
+    for char in expression:
+        if char not in non_operands and char.isalpha():
+            operands.append(char)
+            
+    for operand in operands:
+        for char in operand:
+            if char not in identifiers:
+                identifiers.append(char)
+    
+    identifiers.sort()
+    return identifiers
+
+def initial_table(identifiers: List[str]) -> Dict:
+    """
+    Constructs initial table with identifiers
+    Args:
+        identifiers (List[str]): identifiers in an expression
+
+    Returns:
+        Dict: initial table
+    """
+    n_rows =  2 ** len(identifiers)
+    columns = {identifier: [] for identifier in identifiers}
+    
+    alternate_count = int(n_rows / 2)
+    switch_count = int(n_rows / alternate_count)
+    loop = 0
+    for key in columns:
+        while loop in range(switch_count):
+            for count in range(alternate_count):
+                if loop % 2 == 0:
+                    columns[key] += [0]
+                else:
+                    columns[key] += [1]
+            
+            loop += 1
+            
+        alternate_count //= 2
+        if alternate_count >= 1:
+            switch_count *= 2
+        else:
+            switch_count = 0
+        loop = 0
+            
+    return columns
+
 
 def tree_height(tokenized_expression:str) -> int:
     if isinstance(tokenized_expression, dict):
@@ -28,20 +93,6 @@ def get_innermost_dicts(tokenized_expression: Dict, current_height: int, max_hei
         return innermost_dicts
     else:
         return []
-
-# expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', 'C']}]}
-
-expression = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
-height = tree_height(expression)
-innermost_dicts = get_innermost_dicts(expression, 1, height)
-# expr = '(A * B) + (A * C)'
-expr = "A*B + (A*(C + D))"
-# expression = {'+': [[1, 1, 0, 0, 0, 0, 0, 0], [1, 0, 1, 0, 0, 0, 0, 0]]}
-# height = tree_height(expression)
-# innermost_dicts = get_innermost_dicts(expression, 1, height)
-
-# print(innermost_dicts)
-# print(height)
 
 
 def perform_operation(innermost_dicts: List[Dict] | List[int], initial_table: Dict) -> List[List[int]]:
@@ -76,7 +127,7 @@ def perform_operation(innermost_dicts: List[Dict] | List[int], initial_table: Di
                     bool_val = [a and b for a, b in zip(value[0], value[1])]
 
             elif key == '!':
-                if str(value[0]).isalpha() and str(value[1]).isalpha():
+                if str(value[0]).isalpha():
                     bool_val = [1 if a else 0 for a in [not bool(x) for x in initial_table[value[0]]]]
                 elif all(isinstance(val, list) for val in value):
                     bool_val = [1 if a else 0 for a in [not bool(x) for x in value[0]]]
@@ -85,14 +136,10 @@ def perform_operation(innermost_dicts: List[Dict] | List[int], initial_table: Di
         
     return new_bool_val
 
-# new_bool_val = perform_operation(innermost_dicts, initial_table(get_identifiers(expr)))
-# print(new_bool_val)
-
 
 def loop_through(tokenized_expression: Dict, max_height: int, bool_value: List[List[int]], current_height: int = 1) -> Dict | List[int]:
     if isinstance(tokenized_expression, dict):
         if current_height == max_height:
-            # Replace innermost dictionary with boolean value
             return bool_value.pop(0)
         new_expr = {}
         for key, value in tokenized_expression.items():
@@ -103,29 +150,6 @@ def loop_through(tokenized_expression: Dict, max_height: int, bool_value: List[L
         return new_expr
     else:
         return tokenized_expression
-    # for value in tokenized_expression.values():
-    #     count = 0
-    #     for val in value:
-    #         cur_height = 1
-    #         if isinstance(val, dict):
-    #             cur_height += 1
-    #             if cur_height != height:
-    #                 loop_through(val, height, bool_value)
-    #             elif cur_height == height:
-    #                 value[value.index(val)] = bool_value[count]
-    #                 count += 1
-    #         elif height == 1:
-    #             return bool_value[count]
-    #         elif isinstance(val, str):
-    #             break
-            
-    #         print(cur_height, height, val, len(val))
-            
-    # return tokenized_expression
-
-# print(f"Bool value: {new_bool_val}")
-            
-# print(loop_through(expression, height, new_bool_val))
 
 def last_column(tokenized_expression: dict, expression: str) -> List[int]:
     cur_max_height = tree_height(tokenized_expression=tokenized_expression)
@@ -134,32 +158,32 @@ def last_column(tokenized_expression: dict, expression: str) -> List[int]:
     bool_val = perform_operation(innermost_dicts=current_dicts, initial_table=init_table)
     cur_expression = loop_through(tokenized_expression=tokenized_expression, max_height=cur_max_height, bool_value=bool_val) 
     
-    print(cur_max_height)
-    print(current_dicts)
-    print(bool_val)
-    print(cur_expression)
-    
     if cur_max_height > 1:
         return last_column(tokenized_expression=cur_expression, expression=expression)
     
     elif cur_max_height == 1 and isinstance(cur_expression, list):
         return cur_expression
+
+
+def final_table(init_table: Dict, bool_exp: str) -> Dict:
+    final_table = {key: value for key, value in init_table.items()}
+    if len(bool_exp) > 1:
+        final_table[bool_exp] = last_column(tokenized_expression=Tokenizer.precedence(bool_exp), expression=bool_exp)
     
-t_expr = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
-expr = "A*B + (A*(C + D))"
-print(last_column(tokenized_expression=t_expr, expression=expr)) 
+    return final_table
+        
+
+if __name__ == "__main__":
+    # print(initial_table(['A', 'B', 'C']))
+    # t_expr = {'+': [{'*': ['A', 'B']}, {'*': ['A', {'+': ['C', 'D']}]}]}
+    # expr = "A*B + (A*(C + D))"
+    # print(last_column(tokenized_expression=t_expr, expression=expr)) 
     
-
-"""
-algo for getting final column boolean values
-
-functions:
-tree_height
-get_innermost_dicts
-perform_operation
-loop_through
-
-
-need to do:
-recurse, combine all
-"""
+    expr = "A"
+    table = initial_table(get_identifiers(expr))
+    res = final_table(table, expr)
+    
+    print(res)
+    
+    # exp = "A + 1"
+    # print(get_identifiers(exp))

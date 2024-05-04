@@ -18,7 +18,7 @@ class Minimize:
                 if char_set[index] == ")" and (char_set[index + 1].isalpha() or char_set[index + 1] == "("):
                     indexes.append(index + 1)
                 elif char_set[index] != ")":
-                    if char_set[index].isalpha() and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1] == "!"):
+                    if (char_set[index].isalpha() or char_set[index].isnumeric()) and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1] == "!"):
                         indexes.append(index + 1)
         
         for i, index in enumerate(indexes):
@@ -38,12 +38,17 @@ class Minimize:
         
         return self.expression
     
+    # @staticmethod
     def retranslate_expression(self, bool_exp:str):
         bool_exp = str(bool_exp)
-        bool_exp = bool_exp.replace('&', '*')
+        bool_exp = bool_exp.replace(' & ', '')
         bool_exp = bool_exp.replace('|', '+')
         bool_exp = bool_exp.replace('~', '!')
+        bool_exp = bool_exp.replace('True', '1')
+        bool_exp = bool_exp.replace('False', '0')
+
         
+                
         return bool_exp
         
     def minimize_expression(self) -> str:
@@ -83,9 +88,10 @@ def evaluate(expression: str) -> str:
     return result
 
 if __name__ == "__main__":
-    exp = "~B(A | A)"
+    exp = "A + B"
     # exp = "A + !A"
     exp = Minimize(exp)
-    print(exp.minimize_expression())
-    # print(exp.evaluate())
+    # print(exp.minimize_expression())
+    # print(simplify_logic(True & A))
+    print(exp.evaluate())
     
