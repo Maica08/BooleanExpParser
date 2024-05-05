@@ -1,41 +1,32 @@
-from typing import Dict
+def evaluate(expression) -> str:
+    char_set = [exp.strip() for exp in expression]
+    modified_chars = []
+    skip_next = False
 
-operators = {'+': 3, '*': 2, '!': 1}
+    for index, char in enumerate(char_set):
+        if skip_next:
+            skip_next = False
+            continue
+        
+        if index < len(char_set) - 1:
+            if char.isalpha() or char.isnumeric():
+                if char_set[index + 1].isnumeric():
+                    modified_chars.extend([char, '*', char_set[index + 1]])
+                    skip_next = True
+                else:
+                    modified_chars.append(char)
+            elif char == "(":
+                modified_chars.append(char)
+            elif char == ")":
+                if char_set[index + 1].isalpha() or char_set[index + 1].isnumeric() or char_set[index + 1] == "(":
+                    modified_chars.extend(['*', char])
+                    skip_next = True
+            else:
+                modified_chars.append(char)
 
-def precedence(expression: str) -> Dict:
-    def find_operator(exp: str, start: int, end: int) -> int:
-        parenthesis_count = 0
-        min_precedence = float('inf')
-        min_precedence_index = -1
-        
-        for i in range(start, end):
-            if exp[i] == '(':
-                parenthesis_count += 1
-            elif exp[i] == ')':
-                parenthesis_count -= 1
-            elif exp[i] in operators and parenthesis_count == 0:
-                if operators[exp[i]] < min_precedence:
-                    min_precedence = operators[exp[i]]
-                    min_precedence_index = i
-        
-        return min_precedence_index
-    
-    exp = expression.strip()
-    
-    if exp[0] == '(' and exp[-1] == ')':
-        exp = exp[1:-1]
-        
-    operator_index = find_operator(exp, 0, len(exp))
-    
-    if operator_index == -1:
-        return exp
-    
-    operator_char = exp[operator_index]
-    left_expr = precedence(exp[:operator_index].strip())
-    right_expr = precedence(exp[operator_index+1:].strip())
-    
-    return {operator_char: [left_expr, right_expr]}
+    result = ''.join(modified_chars)
+    expression = result
+    return result
+# print(evaluate("1A"))
 
-if __name__ == "__main__":
-    a = "(A + C) * (B + C)"
-    print(precedence(a))
+print(0 or 1)

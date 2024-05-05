@@ -15,15 +15,16 @@ class Minimize:
         
         for index in range(len(char_set)):
             if index != len(char_set) - 1:
-                if char_set[index] == ")" and (char_set[index + 1].isalpha() or char_set[index + 1] == "("):
+                if char_set[index] == ")" and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1].isnumeric()):
                     indexes.append(index + 1)
                 elif char_set[index] != ")":
-                    if (char_set[index].isalpha() or char_set[index].isnumeric()) and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1] == "!"):
+                    if (char_set[index].isalpha() or char_set[index].isnumeric()) and (char_set[index + 1].isalpha() or char_set[index + 1] == "(" or char_set[index + 1] == "!" or char_set[index + 1].isnumeric()):
+                        print(True)
                         indexes.append(index + 1)
         
         for i, index in enumerate(indexes):
             char_set.insert(index + i, '*')
-                    
+                            
         result = ''.join([str(char) for char in char_set])
         self.expression = result
         return self.expression
@@ -88,10 +89,4 @@ def evaluate(expression: str) -> str:
     return result
 
 if __name__ == "__main__":
-    exp = "A + B"
-    # exp = "A + !A"
-    exp = Minimize(exp)
-    # print(exp.minimize_expression())
-    # print(simplify_logic(True & A))
-    print(exp.evaluate())
-    
+    print(simplify_logic(True & A))  

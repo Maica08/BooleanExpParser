@@ -2,6 +2,16 @@ from .truth_tables import *
 from typing import List, Dict
 
 def sum_of_prod(bool_exp: str) -> Dict:
+    """
+    Gets the sum of products based on the generated truth table, 
+    for later use in determining primary implicants
+
+    Args:
+        bool_exp (str): boolean expression
+
+    Returns:
+        Dict: min_terms with their corresponding truth values
+    """
     init_table = initial_table(get_identifiers(expression=bool_exp))
     truth_table = final_table(init_table=init_table, bool_exp=bool_exp)
     
@@ -18,6 +28,16 @@ def sum_of_prod(bool_exp: str) -> Dict:
     return sop
 
 def initial_match(sop: Dict) -> List[List[Dict]]:
+    """
+    Gets the initial matching of min terms using the sum of products
+    by grouping them first according to the number of 1's each of min term has
+
+    Args:
+        sop (Dict): sum of products
+
+    Returns:
+        List[List[Dict]]: initial matches of min terms
+    """
     # group the minterms first according to the number of ones they have
     # sop = {idx: [truth values]}
     ones_num = []
@@ -37,6 +57,16 @@ def initial_match(sop: Dict) -> List[List[Dict]]:
     return init_groupings
     
 def get_matches(init_match: List) -> List[List[Dict]]:
+    """
+    Gets the matches of min terms depending on the changes
+    that occur in their values
+
+    Args:
+        init_match (List): min terms initial match
+
+    Returns:
+        List[List[Dict]]: min terms match
+    """
     result = []
     
     i = 0
@@ -78,6 +108,17 @@ def get_matches(init_match: List) -> List[List[Dict]]:
     return result
 
 def get_final_match(init_match: List) -> List[List[Dict]]:
+    """
+    Recursive function that uses the get_matches function to
+    arrive to the final match of min terms in order to determine
+    the primary implicants
+
+    Args:
+        init_match (List): min terms initial match
+
+    Returns:
+        List[List[Dict]]: final match of min terms
+    """
     first = get_matches(init_match=init_match)
     second = get_matches(init_match=first)
     
@@ -88,6 +129,16 @@ def get_final_match(init_match: List) -> List[List[Dict]]:
         return get_final_match(init_match=second)
     
 def get_minimize_exp(final_match: List[List[Dict]]) -> str:
+    """
+    Determines the significant primary implicants based on the 
+    final match of min terms
+
+    Args:
+        final_match (List[List[Dict]]): final match of min terms
+
+    Returns:
+        str: simplified boolean expression
+    """
     f_match = []
     for match in final_match:
         f_match.extend(match)
@@ -132,8 +183,10 @@ def get_minimize_exp(final_match: List[List[Dict]]) -> str:
 
     
 if __name__ == "__main__":
-    expr = "A"
+    expr = "A + B*A"
     sop = sum_of_prod(bool_exp=expr)    
     init_mp = initial_match(sop=sop)
     new_mp = get_final_match(init_match=init_mp)
     f_match = get_minimize_exp(new_mp)
+    
+    print(f_match)

@@ -4,13 +4,15 @@ class Tokenize:
     def __init__(self, bool_expr):
         self.bool_expr = bool_expr
         self.token_patterns = [
-            {"pattern": r'\+', "type": "operator", "name": "OR", "weight": 3},
-            {"pattern": r'\*', "type": "operator", "name": "AND", "weight": 2},
-            {"pattern": r'!', "type": "operator", "name": "NOT", "weight": 1},
-            {"pattern": r'\(', "type": "delimiter", "name": "l_parenthesis", "weight": 0},
-            {"pattern": r'\)', "type": "delimiter", "name": "r_parenthesis", "weight": 0},
-            {"pattern": r'\s+', "type": "delimiter", "name": "whitespace", "weight": 0},
-            {"pattern": r'[a-zA-Z]+', "type": "operand", "name": "operand", "weight": 0}
+            {"pattern": r'\+', "type": "operator", "name": "OR"},
+            {"pattern": r'\*', "type": "operator", "name": "AND"},
+            {"pattern": r'!', "type": "operator", "name": "NOT"},
+            {"pattern": r'\(', "type": "delimiter", "name": "l_parenthesis"},
+            {"pattern": r'\)', "type": "delimiter", "name": "r_parenthesis"},
+            {"pattern": r'\s+', "type": "delimiter", "name": "whitespace"},
+            {"pattern": r'[a-zA-Z]+', "type": "operand", "name": "operand"},
+            {"pattern": r'1', "type": "constant", "name": "1"},
+            {"pattern": r'0', "type": "constant", "name": "0"}
         ]
         self.tokens = []
         
@@ -29,9 +31,8 @@ class Tokenize:
                         token = {
                             "value": match.group(),
                             "type": token_pattern["type"],
-                            "name": token_pattern["name"],
-                            "weight": token_pattern["weight"]
-                        }
+                            "name": token_pattern["name"]
+                            }
                         self.tokens.append(token)
                     
                 current_index += 1
@@ -40,7 +41,7 @@ class Tokenize:
 
                     
 if __name__ == "__main__":
-    expr = "!AB * C"
+    expr = "!AB * C + 1"
     expr = Tokenize(bool_expr=expr)
     lines = expr.tokenize()
 
