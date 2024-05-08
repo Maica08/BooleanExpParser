@@ -1,5 +1,5 @@
 from typing import List, Dict
-from .parse import Precedence_Tree
+from parse import Precedence_Tree
 
 
 operators = ['+', '*', '!']
@@ -262,7 +262,7 @@ def final_table(init_table: Dict, bool_exp: str) -> Dict:
         
 
 if __name__ == "__main__":
-    expr = "(A + B)*(A + C)"
+    expr = "(X + Y) * Z"
     table = initial_table(get_identifiers(expr))
     res = final_table(table, expr)
     
