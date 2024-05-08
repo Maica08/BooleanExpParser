@@ -1,5 +1,5 @@
 from typing import List, Dict
-from parse import Precedence_Tree
+from .parse import Precedence_Tree
 
 
 operators = ['+', '*', '!']

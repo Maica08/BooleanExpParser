@@ -14,6 +14,7 @@ class Tokenize:
             {"pattern": r'1', "type": "constant", "name": "1"},
             {"pattern": r'0', "type": "constant", "name": "0"}
         ]
+        self.accepted_symbols = ['+', '*', '!', '(', ')', '1', '0']
         self.tokens = []
         
     def __repr__(self) -> str:
@@ -22,8 +23,9 @@ class Tokenize:
     def tokenize(self):
         current_index = 0
         for current_index, char in enumerate(self.bool_expr):
+            if char != " " and char not in self.accepted_symbols and not char.isalpha():
+                raise ValueError(f"Invalid character: {char}")
             if char != r'\s+':
-                match = None
                 for token_pattern in self.token_patterns:
                     pattern = re.compile(token_pattern["pattern"])
                     match = pattern.match(char)
@@ -41,8 +43,10 @@ class Tokenize:
 
                     
 if __name__ == "__main__":
-    expr = "!AB * C + 1"
+    expr = "!AB *   C + 1 + 2"
     expr = Tokenize(bool_expr=expr)
     lines = expr.tokenize()
 
     print(lines)
+    
+    

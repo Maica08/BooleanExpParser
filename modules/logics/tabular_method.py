@@ -1,4 +1,4 @@
-from truth_tables import *
+from .truth_tables import *
 from typing import List, Dict
 
 def sum_of_prod(bool_exp: str) -> Dict:
