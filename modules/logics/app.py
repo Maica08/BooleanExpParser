@@ -2,6 +2,7 @@ from .tabular_method import *
 from .truth_tables import final_table, initial_table, get_identifiers
 from .tokenizer import Tokenize
 from typing import List, Dict
+import os
 
 class App:
     def __init__(self, bool_exp: str) -> None:
@@ -52,13 +53,38 @@ class App:
             
                 sop = sum_of_prod(bool_exp=self.bool_exp)
                 init_match = initial_match(sop=sop)
-                final_match = get_final_match(init_match=init_match)
+                final_match = get_final_match(init_match=init_match, exemption=[])
                 
                 result = get_minimize_exp(final_match=final_match, operands=operands)
-            
+                
             return result
     
+def main() -> None:
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        
+        prompt = input("Enter the boolean expression: ")
+        result = App(bool_exp=prompt)
+        print(f"Result: {result.generate_result()}")
+        print()
+        
+        choice = input("Do you want to continue? (y/n): ")
+        if choice.lower() == 'n':
+            break
+        
+def alt_main() -> None:
+    expressions = [
+        "A0", "A1", "A + 0", "A + A", "AA", "A + !A", "!(AB)", "!(A + B)", "A + AB", "A(A+B)", "A + !AB", "A(!A + B)", "!(!A)", "A(B+C)",
+        "AB + B!C  + AC", "A!B + BC + AC", "(A + B)(!A + C)(B + C)", "(A + B)(!B + C)(A + C)", "!A!B + A!C + !B!C", 
+        "A((A + !A) + !B)", "AB + A(B + C) + B(B + C)", "!(!A(B + C))", "(A + !B + !C)(A + !B + C)(A + B + !C)"     
+    ]
+    
+    for i in range(len(expressions)):
+        print(f"{i + 1}. {expressions[i]}")
+        result = App(bool_exp=expressions[i])
+        print(f"Result: {result.generate_result()}")
+        result = None
+        print()
+
 if __name__ == "__main__":
-    exp = "A(B + C) + 1"
-    exp = App(exp)
-    print(exp.generate_result())
+    alt_main()

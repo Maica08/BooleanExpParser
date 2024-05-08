@@ -38,10 +38,7 @@ class UI(ctk.CTk):
         
         if expression:
             self.bottombox.insert("end", result)
-        
-
+            
 if __name__=="__main__":
     app = UI()
     app.mainloop()
-
-

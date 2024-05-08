@@ -24,6 +24,7 @@ def sum_of_prod(bool_exp: str) -> Dict:
         mt_values.append(temp)
         
     sop = {str(min_terms[i]): mt_values[i] for i in range(len(min_terms))}
+
     
     return sop
 
@@ -124,6 +125,7 @@ def get_matches(init_match: List) -> List[List[Dict]]:
     if not result:
         return init_match, unmatched_minterm
     
+    
     return result, unmatched_minterm
 
 def get_final_match(init_match: List, exemption: List = []) -> List[List[Dict]]:
@@ -138,6 +140,7 @@ def get_final_match(init_match: List, exemption: List = []) -> List[List[Dict]]:
     Returns:
         List[List[Dict]]: final match of min terms
     """
+    
     first, init_exemption = get_matches(init_match=init_match)
     second, add_exemp = get_matches(init_match=first)
     
@@ -154,6 +157,7 @@ def get_final_match(init_match: List, exemption: List = []) -> List[List[Dict]]:
     
     else:
         return get_final_match(init_match=second, exemption=exemption)
+    
     
 def get_minimize_exp(final_match: List[List[Dict]], operands: List) -> str:
     """
@@ -210,7 +214,7 @@ def get_minimize_exp(final_match: List[List[Dict]], operands: List) -> str:
 
     
 if __name__ == "__main__":
-    expr = "!A*B + A*C"
+    expr = "(A + !B + !C)*(A + !B + C)*(A + B + !C)"
     operands = get_identifiers(expression=expr)
     sop = sum_of_prod(bool_exp=expr)    
     init_mp = initial_match(sop=sop)

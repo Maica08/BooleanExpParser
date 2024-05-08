@@ -80,6 +80,6 @@ class Precedence_Tree:
 
 
 if __name__ == "__main__":
-    a = "(A + B) * (A + C)"
+    a = "A*B + C"
     print(Precedence_Tree.precedence(a))
     

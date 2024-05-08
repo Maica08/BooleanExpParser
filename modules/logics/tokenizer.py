@@ -43,7 +43,7 @@ class Tokenize:
 
                     
 if __name__ == "__main__":
-    expr = "!AB *   C + 1 + 2"
+    expr = "!AB *  C + 1 + 2"
     expr = Tokenize(bool_expr=expr)
     lines = expr.tokenize()
 
